@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <title>Calculator</title>
+  </head>
+<body>
+<marquee bgcolor="#053965" scrolldelay="100">
+  <span style="font-size: 36px; font-family: 'Dancing Script', cursive; color: #FFF;">
+    Tasneem's Calculator
+  </span>
+</marquee>
+<div class="calculator">
+  <input type="text" class="input" id="input">
+  <div class="buttons">
+    <div class="operators">
+      <div>+</div>
+      <div>-</div>
+      <div>*</div>
+      <div>/</div>
+    </div>
+  </div>
+</div>
+<div class="result">
+<div id="resultDisplay" class="resultDisplay"></div> 
+</div>
+
+<script>
+"use strict";
+
+var input = document.getElementById('input'), // input/output button
+  operator = document.querySelectorAll('.operators div'), // operator buttons
+  resultDisplay = document.getElementById('resultDisplay'); // result display div
+
+// Adding click handlers to operator buttons
+for (var i = 0; i < operator.length; i++) {
+  operator[i].addEventListener("click", function(e) {
+    var currentString = input.value;
+    var lastChar = currentString[currentString.length - 1];
+
+    // If last character entered is an operator, replace it with the currently pressed one
+    if (lastChar === "+" || lastChar === "-" || lastChar === "*" || lastChar === "/") {
+      var newString = currentString.substring(0, currentString.length - 1) + e.target.innerHTML;
+      input.value = newString;
+    } else if (currentString.length == 0) {
+      // If first key pressed is an operator, don't do anything
+      console.log("Enter a number first");
+    } else {
+      // Else just add the operator pressed to the input
+      input.value += e.target.innerHTML;
+    }
+
+    // Updating the result display dynamically
+    updateResultDisplay();
+  });
+}
+
+// Updating the result display based on the current input
+function updateResultDisplay() {
+  var inputString = input.value;
+  var numbers = inputString.split(/[\+\-\*\/]/g);
+  var operators = inputString.replace(/[0-9]/g, "").split("").filter(Boolean);
+
+  // Initializing the result to the first number
+  var result = parseFloat(numbers[0]) || 0;
+
+  // Looping through the operators to perform calculations
+  for (var i = 0; i < operators.length; i++) {
+    if (operators[i] === "*") {
+      result *= parseFloat(numbers[i + 1]) || 1; // Handle cases like "5*" where the second operand is missing
+    } else if (operators[i] === "/") {
+      result /= parseFloat(numbers[i + 1]) || 1; // Handle cases like "5/" where the second operand is missing
+    } else if (operators[i] === "+") {
+      result += parseFloat(numbers[i + 1]) || 0;
+    } else if (operators[i] === "-") {
+      result -= parseFloat(numbers[i + 1]) || 0;
+    }
+  }
+
+  // Displaying the result in the result display div
+  resultDisplay.textContent = 'Result: ' + result;
+}
+
+// Added an input event listener to update the result display on input changes
+input.addEventListener("input", updateResultDisplay);
+
+</script>
+
+</body>
+</html>
